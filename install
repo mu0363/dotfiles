@@ -1,0 +1,36 @@
+#!/bin/sh
+#↑これはシェルファイルですよ〜のお知らせ。認識しない場合はVSCodeを再起動
+
+#このシェルファイルに実行権限を与える chmod +x install
+# ./install でこのスクリプトが実行される
+
+#このスクリプト実行中にエラーが起こったらそこで終了する
+set -e 
+
+#もしHomebrewが入ってなかったらインストールする
+if [ ! -f /usr/local/bin/brew ]; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+#Brewfileを作って、そこに使用するツールを書き込む
+#stow dotfilesをマシンにリンクさせるため
+#starship プロンプトをおしゃれにできるやつ
+
+#もしローカルにdotfilesのリポジトリがcloneされてなければcloneする
+if [ ! -d ~/dotfiles ]; then
+  cd ~
+  git clone git@github.com:mu0363/dotfiles.git
+fi
+
+#Brewfileに書き込んだ内容をインストール
+#-v オプションををつけるとより多くの情報が表示される
+brew bundle -v --file=~/dotfiles/Brewfile
+
+if [ ! -d ~/.config ]; then
+  mkdir ~/.config
+fi
+
+#stowを通して starship/.zshrcをホームディレクトリにリンクする
+#どっからどこへリンクする？ 　-d こっから　-t ここへ
+# man stow でコマンド確認できる
+stow -v -d ~/dotfiles/packages -t ~ zsh starship
