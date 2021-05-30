@@ -31,6 +31,6 @@ if [ ! -d ~/.config ]; then
 fi
 
 #stowを通して starship/.zshrcをホームディレクトリにリンクする
-#どっからどこへリンクする？ 　-d こっから　-t ここへ
+#どっからどこへリンクする？ 　-d こっから　-t ここへリンク
 # man stow でコマンド確認できる
 stow -v -d ~/dotfiles/packages -t ~ zsh starship
